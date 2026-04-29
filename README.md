@@ -40,12 +40,11 @@ crypto-live-engine/
 🚀 Installation & Setup
 1️⃣ Clone the Repository
 Bash
-git clone https://github.com/YOUR_USERNAME/crypto-live-engine.git
-cd crypto-live-engine
+git clone
 2️⃣ Create Virtual Environment (Optional but Recommended)
 Bash
 python -m venv venv
-source venv/bin/activate   # On Windows: venv\Scripts\activate
+source venv/bin/activate  
 3️⃣ Install Dependencies
 Bash
 pip install -r requirements.txt
@@ -53,5 +52,4 @@ pip install -r requirements.txt
 Bash
 python app.py
 5️⃣ Open in Browser
-
 http://127.0.0.1:5000/
