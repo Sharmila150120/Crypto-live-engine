@@ -3,7 +3,6 @@ import requests
 
 app = Flask(__name__)
 
-# Free API for top 10 Cryptos
 COINGECKO_URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false"
 
 @app.route('/')
