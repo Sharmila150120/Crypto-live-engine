@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Crypto Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .price-up { color: #10b981; }
+        .price-down { color: #ef4444; }
+        .card-hover:hover { transform: translateY(-5px); transition: 0.3s; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <div class="max-w-6xl mx-auto">
+        <header class="flex justify-between items-center mb-10">
+            <div>
+                <h1 class="text-3xl font-bold text-indigo-400">CryptoLive Engine</h1>
+                <p class="text-gray-400">Real-time market analytics powered by Flask</p>
+            </div>
+            <div id="status" class="bg-gray-800 px-4 py-2 rounded-full text-xs text-green-400 border border-green-900">
+                ● Live Updates Active
+            </div>
+        </header>
+
+        <div class="bg-gray-800 rounded-xl overflow-hidden shadow-2xl border border-gray-700">
+            <table class="w-full text-left">
+                <thead class="bg-gray-700 text-gray-300 uppercase text-sm">
+                    <tr>
+                        <th class="p-4">Coin</th>
+                        <th class="p-4">Price (USD)</th>
+                        <th class="p-4">24h Change</th>
+                        <th class="p-4">Market Cap</th>
+                    </tr>
+                </thead>
+                <tbody id="crypto-table-body">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        async function fetchCryptoData() {
+            const status = document.getElementById('status');
+            status.innerText = "Updating...";
+            
+            try {
+                const response = await fetch('/get_data');
+                const data = await response.json();
+                const tableBody = document.getElementById('crypto-table-body');
+                tableBody.innerHTML = '';
+
+                data.forEach(coin => {
+                    const changeClass = coin.price_change_percentage_24h >= 0 ? 'price-up' : 'price-down';
+                    const symbol = coin.price_change_percentage_24h >= 0 ? '▲' : '▼';
+                    
+                    tableBody.innerHTML += `
+                        <tr class="border-b border-gray-700 hover:bg-gray-750 transition card-hover">
+                            <td class="p-4 flex items-center gap-3">
+                                <img src="${coin.image}" class="w-8 h-8">
+                                <div>
+                                    <p class="font-bold">${coin.name}</p>
+                                    <p class="text-xs text-gray-500 uppercase">${coin.symbol}</p>
+                                </div>
+                            </td>
+                            <td class="p-4 font-mono font-bold">$${coin.current_price.toLocaleString()}</td>
+                            <td class="p-4 ${changeClass} font-bold">
+                                ${symbol} ${coin.price_change_percentage_24h.toFixed(2)}%
+                            </td>
+                            <td class="p-4 text-gray-400 text-sm">$${coin.market_cap.toLocaleString()}</td>
+                        </tr>
+                    `;
+                });
+                status.innerText = "● Live Updates Active";
+            } catch (error) {
+                status.innerText = "Connection Error";
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        // Fetch data immediately on load
+        fetchCryptoData();
+        // Refresh data every 30 seconds
+        setInterval(fetchCryptoData, 30000);
+    </script>
+</body>
+</html>
